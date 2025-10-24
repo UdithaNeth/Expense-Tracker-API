@@ -1,0 +1,357 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789abc",
+		"name": "Expense Tracker API",
+		"description": "API collection for testing the Expense Tracker backend API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Expenses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response is an array\", function () {",
+							"    pm.expect(pm.response.json()).to.be.an('array');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/expenses",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"expenses"
+					]
+				},
+				"description": "Retrieve all expenses from the database"
+			},
+			"response": []
+		},
+		{
+			"name": "Add New Expense",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response has expense properties\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('title');",
+							"    pm.expect(responseJson).to.have.property('amount');",
+							"    pm.expect(responseJson).to.have.property('category');",
+							"    pm.expect(responseJson).to.have.property('_id');",
+							"});",
+							"",
+							"// Store the expense ID for use in delete request",
+							"if (pm.response.code === 201) {",
+							"    const responseJson = pm.response.json();",
+							"    pm.environment.set(\"expense_id\", responseJson._id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Coffee\",\n    \"amount\": 5.50,\n    \"category\": \"Food & Beverages\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/expenses",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"expenses"
+					]
+				},
+				"description": "Add a new expense to the database"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Expense - Groceries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response has expense properties\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('title');",
+							"    pm.expect(responseJson).to.have.property('amount');",
+							"    pm.expect(responseJson).to.have.property('category');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Weekly Groceries\",\n    \"amount\": 85.30,\n    \"category\": \"Groceries\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/expenses",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"expenses"
+					]
+				},
+				"description": "Add a groceries expense example"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Expense - Transportation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Response has expense properties\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('title');",
+							"    pm.expect(responseJson).to.have.property('amount');",
+							"    pm.expect(responseJson).to.have.property('category');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Gas Fill-up\",\n    \"amount\": 45.00,\n    \"category\": \"Transportation\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/expenses",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"expenses"
+					]
+				},
+				"description": "Add a transportation expense example"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Expense",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response has success message\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('message');",
+							"    pm.expect(responseJson.message).to.include('deleted successfully');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/expenses/{{expense_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"expenses",
+						"{{expense_id}}"
+					]
+				},
+				"description": "Delete an expense by ID. The expense_id variable is automatically set when you create a new expense."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Expense - Invalid Data (Missing Title)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Response has error message\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.have.property('message');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": 25.00,\n    \"category\": \"Test\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/expenses",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"expenses"
+					]
+				},
+				"description": "Test error handling with invalid data (missing required title field)"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Non-existent Expense",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 500 or 404\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([500, 404]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/expenses/507f1f77bcf86cd799439011",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"expenses",
+						"507f1f77bcf86cd799439011"
+					]
+				},
+				"description": "Test error handling when trying to delete a non-existent expense"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}

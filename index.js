@@ -1,7 +1,8 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import expenseRoutes from './routes/expenses.js';
+import cors from 'cors';
+import expenseRoutes from './routes/expenseRoutes.js';
 import bodyParser from 'body-parser';
 
 dotenv.config();
@@ -16,10 +17,7 @@ app.use('/api/expenses', expenseRoutes);
 //MongoDB connection
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI,{
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGO_URI)
 
 .then(() => {
     console.log('Connected to MongoDB');

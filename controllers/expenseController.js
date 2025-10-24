@@ -12,8 +12,13 @@ export const getExpenses = async (req, res) => {
 
 // Add new expense
 export const addExpense = async (req, res) => {
-  const { title, amount, category } = req.body;
-  const expense = new Expense({ title, amount, category });
+  const { title, amount, category, date } = req.body;
+  const expense = new Expense({ 
+    title, 
+    amount, 
+    category, 
+    date: date || new Date() // Use provided date or current date as default
+  });
   try {
     const savedExpense = await expense.save();
     res.status(201).json(savedExpense);
